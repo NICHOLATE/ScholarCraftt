@@ -162,19 +162,21 @@ const Generator: React.FC<GeneratorProps> = ({ onResultGenerated, initialContext
         <div className="space-y-5">
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Topic / Subject <span className="text-red-500">*</span></label>
-            <textarea 
-              value={formData.topic}
-              onChange={(e) => {
-                setFormData({...formData, topic: e.target.value});
-                if (error) setError(null); // Clear error on user input
-              }}
-              placeholder="e.g. The French Revolution, Quadratic Equations..."
-              className={`w-full bg-slate-50 border rounded-lg p-3 text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-2 focus:outline-none min-h-[80px] transition-all shadow-inner ${
-                error && !formData.topic.trim() 
-                  ? 'border-red-300 focus:ring-red-200' 
-                  : 'border-slate-200 focus:ring-indigo-100 focus:border-indigo-300'
-              }`}
-            />
+            <div className="relative">
+              <textarea 
+                value={formData.topic}
+                onChange={(e) => {
+                  setFormData({...formData, topic: e.target.value});
+                  if (error) setError(null); // Clear error on user input
+                }}
+                placeholder="e.g. The French Revolution, Quadratic Equations..."
+                className={`w-full bg-slate-50 border rounded-lg p-3 pr-12 text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-2 focus:outline-none min-h-[80px] transition-all shadow-inner ${
+                  error && !formData.topic.trim() 
+                    ? 'border-red-300 focus:ring-red-200' 
+                    : 'border-slate-200 focus:ring-indigo-100 focus:border-indigo-300'
+                }`}
+              />
+            </div>
           </div>
 
           <div>

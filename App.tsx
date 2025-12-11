@@ -6,13 +6,12 @@ import Documentation from './components/Documentation';
 import HistoryView from './components/HistoryView';
 import ExamplesView from './components/ExamplesView';
 import ChatView from './components/ChatView';
-import LiveVoiceView from './components/LiveVoiceView';
 import { GenerationResult, NavItem } from './types';
-import { Layout, FileText, History, LayoutTemplate, GraduationCap, MessageSquare, Mic } from 'lucide-react';
+import { Layout, FileText, History, LayoutTemplate, GraduationCap, MessageSquare } from 'lucide-react';
 
 const App: React.FC = () => {
   const [showSplash, setShowSplash] = useState(true);
-  const [currentView, setCurrentView] = useState<'generator' | 'history' | 'templates' | 'docs' | 'chat' | 'live'>('generator');
+  const [currentView, setCurrentView] = useState<'generator' | 'history' | 'templates' | 'docs' | 'chat'>('generator');
   const [result, setResult] = useState<GenerationResult | null>(null);
 
   // Auto-run state for when navigating from Templates
@@ -29,16 +28,40 @@ const App: React.FC = () => {
     }
   });
 
-  // Persist history changes
+  // Persist history changes with quota management
   useEffect(() => {
-    localStorage.setItem('scholarcraft_history', JSON.stringify(history));
+    try {
+      localStorage.setItem('scholarcraft_history', JSON.stringify(history));
+    } catch (e) {
+      console.warn("LocalStorage quota exceeded. Attempting to optimize storage.");
+      
+      try {
+        // Strategy 1: Remove images (Base64 strings are the main cause of bloat)
+        // We create a new array where items do not have the imageUrl property
+        const textOnlyHistory = history.map(item => {
+           const { imageUrl, ...rest } = item;
+           return rest; 
+        });
+        localStorage.setItem('scholarcraft_history', JSON.stringify(textOnlyHistory));
+      } catch (e2) {
+        // Strategy 2: If still failing, keep only the last 20 items (text only)
+        try {
+          const slicedHistory = history.slice(-20).map(item => {
+             const { imageUrl, ...rest } = item;
+             return rest;
+          });
+          localStorage.setItem('scholarcraft_history', JSON.stringify(slicedHistory));
+        } catch (e3) {
+          console.error("Failed to persist history: Storage full", e3);
+        }
+      }
+    }
   }, [history]);
 
   const navItems: NavItem[] = [
     { id: 'generator', label: 'Generator', icon: Layout },
     { id: 'templates', label: 'Templates', icon: LayoutTemplate },
     { id: 'chat', label: 'AI Assistant', icon: MessageSquare },
-    { id: 'live', label: 'Live Tutor', icon: Mic },
     { id: 'history', label: 'History', icon: History },
     { id: 'docs', label: 'Documentation', icon: FileText },
   ];
@@ -179,10 +202,6 @@ const App: React.FC = () => {
 
         {currentView === 'chat' && (
           <ChatView />
-        )}
-
-        {currentView === 'live' && (
-          <LiveVoiceView />
         )}
       </main>
     </div>

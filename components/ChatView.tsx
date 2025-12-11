@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
-import { Send, Bot, User, Sparkles, Loader2, Eraser } from 'lucide-react';
+import { Send, User, Sparkles, Loader2, Eraser } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -18,6 +18,7 @@ const ChatView: React.FC = () => {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatSessionRef = useRef<Chat | null>(null);
 
@@ -118,7 +119,6 @@ const ChatView: React.FC = () => {
                   ? 'bg-slate-100 text-slate-800 rounded-tr-none' 
                   : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none ring-1 ring-slate-900/5'
               }`}>
-                 {/* Simple Markdown Rendering Support could go here, for now using raw text with whitespace-pre-wrap */}
                  {msg.text}
               </div>
             </div>
@@ -149,8 +149,9 @@ const ChatView: React.FC = () => {
                 }
               }}
               placeholder="Ask about teaching strategies, classroom management, or lesson ideas..."
-              className="w-full bg-white border border-slate-300 rounded-xl p-4 pr-12 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none h-[60px] custom-scrollbar shadow-sm"
+              className="w-full bg-white border border-slate-300 rounded-xl p-4 pr-16 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none h-[60px] custom-scrollbar shadow-sm"
             />
+            
             <button
               onClick={handleSend}
               disabled={!input.trim() || isLoading}

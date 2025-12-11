@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality } from "@google/genai";
-import { Mic, MicOff, Volume2, Activity, Radio, PlayCircle, StopCircle } from 'lucide-react';
+import { Mic, MicOff, Volume2, Activity, Radio, PlayCircle, StopCircle, AlertCircle } from 'lucide-react';
 
 // --- Audio Encoding / Decoding Utilities ---
 
@@ -61,6 +61,7 @@ const LiveVoiceView: React.FC = () => {
   const [isSpeaking, setIsSpeaking] = useState(false); // Model speaking
   const [micActive, setMicActive] = useState(false);
   const [status, setStatus] = useState<'disconnected' | 'connecting' | 'connected' | 'error'>('disconnected');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
   // Refs for Audio Contexts and cleanup
   const inputContextRef = useRef<AudioContext | null>(null);
@@ -122,6 +123,8 @@ const LiveVoiceView: React.FC = () => {
 
   const connect = async () => {
     setStatus('connecting');
+    setErrorMessage(null);
+
     try {
       // 1. Initialize Audio Contexts
       const inputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
@@ -133,7 +136,23 @@ const LiveVoiceView: React.FC = () => {
       outputNode.connect(outputCtx.destination); // Connect to speakers
 
       // 2. Get Microphone Stream
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      let stream;
+      try {
+         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+           throw new Error("getUserMedia is not supported in this browser or context.");
+         }
+         stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (micError: any) {
+         let msg = "Could not access microphone.";
+         if (micError.name === 'NotFoundError' || micError.message?.includes('device not found')) {
+            msg = "No microphone found. Please connect an audio input device.";
+         } else if (micError.name === 'NotAllowedError' || micError.name === 'PermissionDeniedError') {
+            msg = "Microphone permission denied. Please allow access in browser settings.";
+         }
+         setErrorMessage(msg);
+         throw micError;
+      }
+      
       streamRef.current = stream;
 
       // 3. Setup GenAI Client
@@ -224,6 +243,7 @@ const LiveVoiceView: React.FC = () => {
           onerror: (err) => {
             console.error("Live Session Error", err);
             setStatus('error');
+            setErrorMessage("Connection to Gemini Live service failed.");
             disconnect();
           },
           onclose: () => {
@@ -236,9 +256,13 @@ const LiveVoiceView: React.FC = () => {
       // Store session logic if needed later
       sessionRef.current = sessionPromise;
 
-    } catch (e) {
+    } catch (e: any) {
       console.error("Connection Failed", e);
       setStatus('error');
+      // If we haven't already set a specific mic error
+      if (!errorMessage) {
+         setErrorMessage(e.message || "An unexpected error occurred.");
+      }
       disconnect();
     }
   };
@@ -298,11 +322,20 @@ const LiveVoiceView: React.FC = () => {
             {status === 'connected' && (isSpeaking ? "Tutor is speaking..." : "Listening...")}
             {status === 'error' && "Connection Error"}
           </h3>
-          <p className="text-slate-500 mb-10 text-center max-w-md">
+          
+          <p className="text-slate-500 mb-6 text-center max-w-md">
             {status === 'disconnected' ? "Click connect to start a real-time voice session with the Gemini Live API." : 
              status === 'connected' ? "Go ahead, ask me anything! I can hear you." :
              "Please check your microphone permissions and try again."}
           </p>
+
+          {/* Error Message Display */}
+          {errorMessage && (
+            <div className="mb-8 flex items-center gap-2 p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm font-medium animate-fade-in max-w-md">
+                <AlertCircle size={18} className="shrink-0" />
+                {errorMessage}
+            </div>
+          )}
 
           {/* Controls */}
           <div className="flex gap-6">

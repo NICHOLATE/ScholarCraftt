@@ -38,7 +38,7 @@ export interface GenerationResult {
 }
 
 export interface NavItem {
-  id: 'generator' | 'history' | 'docs' | 'templates' | 'chat' | 'live';
+  id: 'generator' | 'history' | 'docs' | 'templates' | 'chat';
   label: string;
   icon: any;
 }
