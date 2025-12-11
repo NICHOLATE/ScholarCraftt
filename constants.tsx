@@ -1,6 +1,20 @@
 import { Template, DocSection } from './types';
 import React from 'react';
 
+export const SOUTH_AFRICAN_LANGUAGES = [
+  "English",
+  "Afrikaans",
+  "isiZulu",
+  "isiXhosa",
+  "Sepedi",
+  "Setswana",
+  "Sesotho",
+  "Xitsonga",
+  "siSwati",
+  "Tshivenda",
+  "isiNdebele"
+];
+
 // --- Prompt Engineering Methodology: Templates ---
 
 export const EDUCATIONAL_TEMPLATES: Template[] = [
@@ -121,41 +135,41 @@ export const TECHNICAL_DOCS: DocSection[] = [
         </p>
         
         <div className="grid grid-cols-1 gap-4">
-          <div className="bg-zinc-800 p-4 rounded border border-zinc-700">
-            <h4 className="font-bold text-violet-400 mb-1">1. Structured Lesson Plan</h4>
-            <p className="text-sm text-zinc-300">
+          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <h4 className="font-bold text-indigo-600 mb-1">1. Structured Lesson Plan</h4>
+            <p className="text-sm text-slate-600">
               <strong>Technique: Chain-of-Thought Sequencing.</strong><br/>
               We force the model to think linearly through a class period. By explicitly requesting "Timing" in the prompt structure, the model allocates tokens to simulate a real 60-minute flow (Intro -> Instruction -> Practice), ensuring no section is skipped.
             </p>
           </div>
           
-          <div className="bg-zinc-800 p-4 rounded border border-zinc-700">
-            <h4 className="font-bold text-violet-400 mb-1">2. Exam Study Guide</h4>
-            <p className="text-sm text-zinc-300">
+          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <h4 className="font-bold text-indigo-600 mb-1">2. Exam Study Guide</h4>
+            <p className="text-sm text-slate-600">
               <strong>Technique: Information Synthesis & Extraction.</strong><br/>
               The prompt directs the model to act as a filter, prioritizing "Key Concepts" and "Misconceptions." This specifically targets the model's reasoning capabilities to distinguish between <i>core knowledge</i> and <i>fluff</i>.
             </p>
           </div>
 
-          <div className="bg-zinc-800 p-4 rounded border border-zinc-700">
-            <h4 className="font-bold text-violet-400 mb-1">3. Creative Story</h4>
-            <p className="text-sm text-zinc-300">
+          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <h4 className="font-bold text-indigo-600 mb-1">3. Creative Story</h4>
+            <p className="text-sm text-slate-600">
               <strong>Technique: Metaphorical Mapping.</strong><br/>
               We utilize Gemini's high creativity temperature (0.7-0.9) for this task. The prompt creates a constraint where the "Narrative" must serve the "Definition," forcing the AI to weave educational facts into plot points rather than appending them as a lecture.
             </p>
           </div>
 
-          <div className="bg-zinc-800 p-4 rounded border border-zinc-700">
-            <h4 className="font-bold text-violet-400 mb-1">4. Interactive Quiz</h4>
-            <p className="text-sm text-zinc-300">
+          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <h4 className="font-bold text-indigo-600 mb-1">4. Interactive Quiz</h4>
+            <p className="text-sm text-slate-600">
               <strong>Technique: Structured Output Enforcement.</strong><br/>
               Unlike other prompts, the Quiz generator enforces a JSON Schema. This "Code-First" approach guarantees that every question has exactly 4 options and a valid index for the correct answer, preventing parsing errors in the React frontend.
             </p>
           </div>
 
-          <div className="bg-zinc-800 p-4 rounded border border-zinc-700">
-            <h4 className="font-bold text-violet-400 mb-1">5. Real-World Analogy</h4>
-            <p className="text-sm text-zinc-300">
+          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <h4 className="font-bold text-indigo-600 mb-1">5. Real-World Analogy</h4>
+            <p className="text-sm text-slate-600">
               <strong>Technique: Zero-Shot Relational Mapping.</strong><br/>
               The prompt explicitly asks for "Limitations of the Analogy." This is a self-correction mechanism. It forces the model to critique its own comparison, ensuring students understand that the analogy is a learning tool, not a perfect representation of reality.
             </p>
@@ -172,10 +186,10 @@ export const TECHNICAL_DOCS: DocSection[] = [
           ScholarCraft AI is built as a single-page application (SPA) using <strong>React 18</strong> and <strong>TypeScript</strong>. 
           The UI is styled with <strong>Tailwind CSS</strong>, adhering to a mobile-first responsive design system.
         </p>
-        <ul className="list-disc pl-5 space-y-2 text-zinc-300">
+        <ul className="list-disc pl-5 space-y-2 text-slate-600">
           <li><strong>Frontend:</strong> React, Vite-compatible structure, Lucide Icons.</li>
           <li><strong>State Management:</strong> React Hooks (useState, useReducer) for local state and history tracking.</li>
-          <li><strong>AI Integration:</strong> Direct client-side integration with Google's <code className="bg-zinc-800 px-1 rounded">@google/genai</code> SDK using the <code>gemini-2.5-flash</code> model.</li>
+          <li><strong>AI Integration:</strong> Direct client-side integration with Google's <code className="bg-slate-100 px-1 rounded text-indigo-600 border border-slate-200">@google/genai</code> SDK using the <code>gemini-2.5-flash</code> model.</li>
           <li><strong>Security:</strong> API keys are processed via environment variables. Input sanitization is handled via React's controlled components.</li>
         </ul>
       </div>
@@ -189,17 +203,17 @@ export const TECHNICAL_DOCS: DocSection[] = [
           We selected the <strong>Gemini 2.5 Flash</strong> model for this educational tool.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <div className="p-4 bg-zinc-800 rounded border border-zinc-700">
-            <h4 className="font-bold text-blue-400 mb-2">Speed & Latency</h4>
-            <p className="text-sm">Flash is optimized for high-frequency, low-latency tasks, essential for an interactive tool where teachers need quick lesson plan iterations.</p>
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <h4 className="font-bold text-blue-600 mb-2">Speed & Latency</h4>
+            <p className="text-sm text-slate-600">Flash is optimized for high-frequency, low-latency tasks, essential for an interactive tool where teachers need quick lesson plan iterations.</p>
           </div>
-          <div className="p-4 bg-zinc-800 rounded border border-zinc-700">
-            <h4 className="font-bold text-emerald-400 mb-2">Cost Efficiency</h4>
-            <p className="text-sm">Educational institutions often have limited budgets. Flash provides the best cost-to-performance ratio for text generation tasks.</p>
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <h4 className="font-bold text-emerald-600 mb-2">Cost Efficiency</h4>
+            <p className="text-sm text-slate-600">Educational institutions often have limited budgets. Flash provides the best cost-to-performance ratio for text generation tasks.</p>
           </div>
-          <div className="p-4 bg-zinc-800 rounded border border-zinc-700">
-            <h4 className="font-bold text-purple-400 mb-2">Context Window</h4>
-            <p className="text-sm">Sufficient context window to handle complex educational standards and long-form curriculum output without truncation.</p>
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <h4 className="font-bold text-purple-600 mb-2">Context Window</h4>
+            <p className="text-sm text-slate-600">Sufficient context window to handle complex educational standards and long-form curriculum output without truncation.</p>
           </div>
         </div>
       </div>
@@ -212,7 +226,7 @@ export const TECHNICAL_DOCS: DocSection[] = [
         <p>
           To ensure a seamless user experience, we track generation time and token usage.
         </p>
-        <ul className="list-disc pl-5 space-y-2 text-zinc-300">
+        <ul className="list-disc pl-5 space-y-2 text-slate-600">
           <li><strong>React.memo:</strong> Heavy text rendering components are memoized to prevent unnecessary re-renders during typing.</li>
           <li><strong>Asynchronous State:</strong> UI remains responsive during API calls using robust loading states and error boundaries.</li>
           <li><strong>Token Estimation:</strong> Client-side heuristic (approx 4 chars/token) allows for immediate feedback without extra API overhead.</li>

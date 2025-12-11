@@ -50,7 +50,11 @@ export const generateContent = async (
     config.depth
   );
 
-  const systemInstruction = "You are ScholarCraft, a specialized educational content generator. Your goal is to produce high-quality, accurate, and pedagogically sound materials.";
+  const languageInstruction = config.language 
+    ? `IMPORTANT: OUTPUT LANGUAGE. The user has requested content in ${config.language}. Ensure all educational content, headings, and explanations are written fluent, grammatically correct ${config.language}.`
+    : "";
+
+  let systemInstruction = `You are ScholarCraft, a specialized educational content generation tool. Your goal is to produce high-quality, accurate, and pedagogically sound materials. ${languageInstruction}`;
 
   // 2. Configure request based on template type
   let modelParams: any = {
@@ -66,6 +70,9 @@ export const generateContent = async (
   // Special handling for Quiz: Use Structured Output
   if (template.id === 'quiz-generator') {
     modelParams.config.responseMimeType = "application/json";
+    // Add specific instruction for JSON structure vs Content Language
+    modelParams.config.systemInstruction += ` When generating the JSON output, keep the keys (question, options, correctAnswer, explanation) in English, but ensure the VALUES (the actual text displayed to students) are in ${config.language || 'English'}.`;
+    
     modelParams.config.responseSchema = {
       type: Type.ARRAY,
       items: {
@@ -85,6 +92,7 @@ export const generateContent = async (
   }
 
   // 3. Prepare Image Prompt
+  // We keep the image prompt in English as the image generation model understands English best for prompt instructions
   const imagePrompt = `Create a high-quality, educational illustration representing "${config.topic}". 
   Context: This image will accompany a ${template.name} for ${config.gradeLevel} students.
   Style: Clear, visually engaging, suitable for an educational textbook or presentation. No text in the image.`;
@@ -111,8 +119,22 @@ export const generateContent = async (
     if (textResponse.status === 'fulfilled' && textResponse.value.text) {
       if (template.id === 'quiz-generator') {
         try {
-          // Parse JSON result
-          quizData = JSON.parse(textResponse.value.text);
+          const rawText = textResponse.value.text;
+          
+          // Robust JSON extraction: Find the outer brackets []
+          const firstBracket = rawText.indexOf('[');
+          const lastBracket = rawText.lastIndexOf(']');
+          
+          let jsonString = rawText;
+          if (firstBracket !== -1 && lastBracket !== -1) {
+            jsonString = rawText.substring(firstBracket, lastBracket + 1);
+          } else {
+            // Fallback cleanup
+            jsonString = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+          }
+          
+          quizData = JSON.parse(jsonString);
+          
           // Auto-generate Markdown content from the structured data for standard view
           if (quizData) {
             content = convertQuizToMarkdown(quizData, config.topic);

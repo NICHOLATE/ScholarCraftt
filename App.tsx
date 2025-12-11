@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SplashScreen from './components/SplashScreen';
 import Generator from './components/Generator';
 import ResultDisplay from './components/ResultDisplay';
 import Documentation from './components/Documentation';
 import HistoryView from './components/HistoryView';
 import ExamplesView from './components/ExamplesView';
+import ChatView from './components/ChatView';
+import LiveVoiceView from './components/LiveVoiceView';
 import { GenerationResult, NavItem } from './types';
-import { Layout, FileText, History, BookOpen, LayoutTemplate } from 'lucide-react';
+import { Layout, FileText, History, LayoutTemplate, GraduationCap, MessageSquare, Mic } from 'lucide-react';
 
 const App: React.FC = () => {
   const [showSplash, setShowSplash] = useState(true);
-  const [currentView, setCurrentView] = useState<'generator' | 'history' | 'templates' | 'docs'>('generator');
+  const [currentView, setCurrentView] = useState<'generator' | 'history' | 'templates' | 'docs' | 'chat' | 'live'>('generator');
   const [result, setResult] = useState<GenerationResult | null>(null);
 
   // Auto-run state for when navigating from Templates
@@ -34,17 +36,19 @@ const App: React.FC = () => {
 
   const navItems: NavItem[] = [
     { id: 'generator', label: 'Generator', icon: Layout },
-    { id: 'history', label: 'History', icon: History },
     { id: 'templates', label: 'Templates', icon: LayoutTemplate },
+    { id: 'chat', label: 'AI Assistant', icon: MessageSquare },
+    { id: 'live', label: 'Live Tutor', icon: Mic },
+    { id: 'history', label: 'History', icon: History },
     { id: 'docs', label: 'Documentation', icon: FileText },
   ];
 
-  const handleResultGenerated = (newResult: GenerationResult) => {
+  const handleResultGenerated = useCallback((newResult: GenerationResult) => {
     setResult(newResult);
     setHistory(prev => [...prev, newResult]);
     // Clear auto-gen context after successful generation
     setAutoGenContext(null);
-  };
+  }, []);
 
   const handleHistorySelect = (selectedResult: GenerationResult) => {
     setResult(selectedResult);
@@ -73,15 +77,20 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-200 flex flex-col md:flex-row font-sans">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col md:flex-row font-sans">
       
       {/* Sidebar Navigation */}
-      <aside className="w-full md:w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col">
-        <div className="p-6 border-b border-zinc-800">
-          <h1 className="text-2xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">
-            ScholarCraft
-          </h1>
-          <p className="text-xs text-zinc-500 mt-1">AI Education Suite</p>
+      <aside className="w-full md:w-64 bg-white border-r border-slate-200 flex flex-col shadow-sm z-10">
+        <div className="p-6 border-b border-slate-100">
+          <div className="flex items-center gap-2 mb-1">
+              <div className="p-1.5 bg-indigo-600 rounded-lg text-white">
+                <GraduationCap size={20} />
+              </div>
+              <h1 className="text-xl font-serif font-bold text-slate-900">
+                ScholarCraft
+              </h1>
+          </div>
+          <p className="text-xs text-slate-500 font-medium tracking-wide">AI Education Suite</p>
         </div>
 
         <nav className="flex-1 p-4 space-y-2">
@@ -98,54 +107,54 @@ const App: React.FC = () => {
                     setAutoGenContext(null); // Clear auto-gen context
                   }
                 }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${
                   isActive 
-                    ? 'bg-violet-600/10 text-violet-400 border border-violet-500/20' 
-                    : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
+                    ? 'bg-indigo-50 text-indigo-700 border border-indigo-100 shadow-sm' 
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
                 <Icon size={20} />
-                <span className="font-medium">{item.label}</span>
+                <span>{item.label}</span>
               </button>
             );
           })}
         </nav>
 
-        <div className="p-6 border-t border-zinc-800">
-          <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50">
-            <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Usage Stats</h4>
+        <div className="p-6 border-t border-slate-100">
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Usage Stats</h4>
             <div className="flex justify-between text-sm mb-1">
-               <span className="text-zinc-500">Model</span>
-               <span className="text-zinc-300">Gemini 2.5</span>
+              <span className="text-slate-500">Model</span>
+              <span className="text-slate-700 font-medium">Gemini 2.5</span>
             </div>
             <div className="flex justify-between text-sm">
-               <span className="text-zinc-500">History</span>
-               <span className="text-emerald-400 flex items-center gap-1">
-                 {history.length} items
-               </span>
+              <span className="text-slate-500">History</span>
+              <span className="text-indigo-600 font-bold flex items-center gap-1">
+                {history.length} items
+              </span>
             </div>
           </div>
-          <div className="mt-4 text-[10px] text-zinc-600 text-center">
-            CAPACITI IS A DIVISION OF FUTURE EDUCATION
+          <div className="mt-4 text-[10px] text-slate-400 text-center font-medium">
+            CAPACITI / FUTURE EDUCATION
           </div>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-4 md:p-6 lg:p-8 h-screen overflow-hidden flex flex-col">
+      <main className="flex-1 p-4 md:p-6 lg:p-8 h-screen overflow-hidden flex flex-col bg-slate-50/50">
         {currentView === 'generator' && (
           result ? (
             <ResultDisplay result={result} onReset={() => setResult(null)} />
           ) : (
-            <div className="h-full flex flex-col">
+            <div className="h-full flex flex-col max-w-7xl mx-auto w-full">
               <header className="mb-8">
-                <h2 className="text-3xl font-serif font-bold text-white mb-2">Create New Content</h2>
-                <p className="text-zinc-400">Select a template and configure your parameters to generate educational material.</p>
+                <h2 className="text-3xl font-serif font-bold text-slate-900 mb-2">Create New Content</h2>
+                <p className="text-slate-500">Select a template and configure your parameters to generate educational material.</p>
               </header>
               <div className="flex-1 min-h-0">
                 <Generator 
-                   onResultGenerated={handleResultGenerated} 
-                   initialContext={autoGenContext}
+                  onResultGenerated={handleResultGenerated} 
+                  initialContext={autoGenContext}
                 />
               </div>
             </div>
@@ -166,6 +175,14 @@ const App: React.FC = () => {
 
         {currentView === 'docs' && (
           <Documentation />
+        )}
+
+        {currentView === 'chat' && (
+          <ChatView />
+        )}
+
+        {currentView === 'live' && (
+          <LiveVoiceView />
         )}
       </main>
     </div>

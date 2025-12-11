@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BookOpen, Brain, Sparkles, GraduationCap, Layout } from 'lucide-react';
+import { Sparkles, GraduationCap } from 'lucide-react';
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -12,65 +12,35 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
     const timer = setTimeout(() => {
       setExiting(true);
       setTimeout(onComplete, 800); // Wait for exit animation
-    }, 3500); // Display time
+    }, 2500); // Reduced display time since there is less to read
 
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
-    <div className={`fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center transition-opacity duration-700 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
+    <div className={`fixed inset-0 z-50 bg-white flex flex-col items-center justify-center transition-opacity duration-700 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
       
-      <div className="text-center mb-12 animate-fade-in">
-        <h1 className="text-5xl md:text-7xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 mb-4">
+      {/* Logo Mark */}
+      <div className="mb-10 relative animate-bounce-slow">
+        <div className="absolute inset-0 bg-indigo-100 rounded-full blur-2xl opacity-60 scale-150"></div>
+        <div className="relative w-32 h-32 bg-white rounded-3xl shadow-2xl shadow-indigo-200 border border-slate-100 flex items-center justify-center">
+             <GraduationCap size={64} className="text-indigo-600" />
+             <div className="absolute -top-3 -right-3 bg-gradient-to-br from-indigo-500 to-blue-500 text-white p-2 rounded-full shadow-lg border-4 border-white">
+                <Sparkles size={24} />
+             </div>
+        </div>
+      </div>
+
+      <div className="text-center animate-fade-in relative z-10 px-4">
+        <h1 className="text-6xl md:text-7xl font-serif font-bold text-slate-900 mb-6 tracking-tight">
           ScholarCraft
         </h1>
-        <p className="text-zinc-400 text-lg tracking-widest uppercase">Intelligent Education Architecture</p>
+        <div className="h-1.5 w-24 bg-gradient-to-r from-indigo-500 to-blue-400 mx-auto rounded-full mb-8"></div>
+        <p className="text-slate-500 text-xl md:text-2xl font-light tracking-widest uppercase">
+          Intelligent Education Architecture
+        </p>
       </div>
 
-      {/* The "Nice Containers" Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl px-6 w-full animate-slide-up">
-        
-        {/* Container 1: Marketing/Creative */}
-        <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-2xl backdrop-blur-sm hover:bg-zinc-800/80 transition-all duration-500 group flex flex-col items-center text-center">
-          <div className="w-12 h-12 rounded-full bg-violet-900/30 flex items-center justify-center mb-4 text-violet-400 group-hover:scale-110 transition-transform">
-            <Brain size={24} />
-          </div>
-          <h3 className="font-semibold text-zinc-200">AI Logic</h3>
-          <p className="text-xs text-zinc-500 mt-2">Powered by Gemini 2.5 Flash</p>
-        </div>
-
-        {/* Container 2: Education Focus */}
-        <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-2xl backdrop-blur-sm hover:bg-zinc-800/80 transition-all duration-500 delay-100 group flex flex-col items-center text-center">
-          <div className="w-12 h-12 rounded-full bg-fuchsia-900/30 flex items-center justify-center mb-4 text-fuchsia-400 group-hover:scale-110 transition-transform">
-            <GraduationCap size={24} />
-          </div>
-          <h3 className="font-semibold text-zinc-200">Pedagogy</h3>
-          <p className="text-xs text-zinc-500 mt-2">Tailored for Educators</p>
-        </div>
-
-        {/* Container 3: Output Quality */}
-        <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-2xl backdrop-blur-sm hover:bg-zinc-800/80 transition-all duration-500 delay-200 group flex flex-col items-center text-center">
-          <div className="w-12 h-12 rounded-full bg-emerald-900/30 flex items-center justify-center mb-4 text-emerald-400 group-hover:scale-110 transition-transform">
-            <Layout size={24} />
-          </div>
-          <h3 className="font-semibold text-zinc-200">Structure</h3>
-          <p className="text-xs text-zinc-500 mt-2">Formatted Markdown</p>
-        </div>
-
-        {/* Container 4: Speed */}
-        <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-2xl backdrop-blur-sm hover:bg-zinc-800/80 transition-all duration-500 delay-300 group flex flex-col items-center text-center">
-          <div className="w-12 h-12 rounded-full bg-amber-900/30 flex items-center justify-center mb-4 text-amber-400 group-hover:scale-110 transition-transform">
-            <Sparkles size={24} />
-          </div>
-          <h3 className="font-semibold text-zinc-200">Creativity</h3>
-          <p className="text-xs text-zinc-500 mt-2">Limitless Generation</p>
-        </div>
-
-      </div>
-
-      <div className="absolute bottom-10 text-zinc-600 text-xs tracking-widest animate-pulse">
-        CAPACITI IS A DIVISION OF FUTURE EDUCATION
-      </div>
     </div>
   );
 };

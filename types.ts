@@ -16,6 +16,7 @@ export interface GenerationConfig {
   tone: string;
   depth: string;
   templateId: string;
+  language?: string;
 }
 
 export interface QuizQuestion {
@@ -37,7 +38,7 @@ export interface GenerationResult {
 }
 
 export interface NavItem {
-  id: 'generator' | 'history' | 'docs' | 'templates';
+  id: 'generator' | 'history' | 'docs' | 'templates' | 'chat' | 'live';
   label: string;
   icon: any;
 }
